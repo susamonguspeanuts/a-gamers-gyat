@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090914">
+  <title>A Gamer's Gyat 🎮</title>
+  <link rel="icon" href="popcat.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="popcat.svg" alt="Popcat-style cat logo">
+      <div>
+        <div class="brand-name">A Gamer's <span>Gyat</span></div>
+        <div class="brand-sub">THE ULTIMATE GAME HUB</div>
+      </div>
+    </div>
+    <div class="online-pill"><span></span> 100+ games</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-badge">🔥 THE GAMING ZONE</div>
+      <h1>Play. Search. <span>Have Fun.</span></h1>
+      <p>Find a game, smash the button, and enter the chaos.</p>
+
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="search" type="search" autocomplete="off"
+          placeholder="Search 100+ games..." aria-label="Search games">
+        <button id="clearSearch" class="clear-btn" aria-label="Clear search">×</button>
+      </div>
+
+      <div class="filters">
+        <button class="filter active" data-filter="all">All Games</button>
+        <button class="filter" data-filter="action">⚡ Action</button>
+        <button class="filter" data-filter="arcade">🕹️ Arcade</button>
+        <button class="filter" data-filter="casual">😎 Casual</button>
+        <button class="filter" data-filter="strategy">🧠 Strategy</button>
+      </div>
+    </section>
+
+    <section class="featured">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">START HERE</span>
+          <h2>Featured Games</h2>
+        </div>
+        <span id="count" class="count"></span>
+      </div>
+      <div id="games" class="game-grid"></div>
+      <div id="empty" class="empty hidden">
+        <div class="empty-icon">🔎</div>
+        <h3>No games found</h3>
+        <p>Try another search.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="popcat.svg" alt="">
+    <span>A Gamer's Gyat</span>
+    <small>Made for gamers • GitHub Pages ready</small>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
