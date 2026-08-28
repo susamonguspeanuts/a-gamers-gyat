@@ -42,6 +42,12 @@ let activeFilter = "all";
 
 function render() {
   const query = searchEl.value.trim().toLowerCase();
+
+  if (query === "rickroll") {
+    window.location.href = "https://www.youtube.com/watch?v=V-_O7nl0Ii0";
+    return;
+  }
+
   const filtered = games.filter(g => {
     const matchesSearch = g[0].toLowerCase().includes(query);
     const matchesFilter = activeFilter === "all" || g[1] === activeFilter;
