@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,240 @@
   <title>A Gamer's Gyat 🎮</title>
   <link rel="icon" href="popcat.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* SECRET GAME */
+    #secretGame {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background:
+        radial-gradient(circle at 50% 20%, #29295a 0%, #111126 45%, #07070d 100%);
+      color: white;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #secretGame * {
+      box-sizing: border-box;
+    }
+
+    #secretGround {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      background: repeating-linear-gradient(
+        135deg,
+        #17172b 0px,
+        #17172b 20px,
+        #202040 20px,
+        #202040 40px
+      );
+      border-top: 4px solid #7c4dff;
+      box-shadow: 0 -5px 20px rgba(124,77,255,.5);
+    }
+
+    #secretPlayer {
+      position: absolute;
+      width: 55px;
+      height: 55px;
+      left: 100px;
+      bottom: 90px;
+      background: linear-gradient(135deg, #ff4fd8, #7c4dff);
+      border-radius: 16px;
+      border: 3px solid white;
+      box-shadow:
+        0 0 15px #ff4fd8,
+        0 0 35px rgba(124,77,255,.7);
+      z-index: 10;
+    }
+
+    #secretPlayer::before {
+      content: "😎";
+      position: absolute;
+      font-size: 31px;
+      left: 8px;
+      top: 7px;
+    }
+
+    .secretObstacle {
+      position: absolute;
+      width: 42px;
+      height: 65px;
+      bottom: 90px;
+      background: linear-gradient(135deg, #ff3838, #8b0000);
+      border: 3px solid #ff8b8b;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(255,0,0,.7);
+      z-index: 5;
+    }
+
+    .secretObstacle::after {
+      content: "💀";
+      position: absolute;
+      font-size: 24px;
+      top: 16px;
+      left: 6px;
+    }
+
+    .secretCoin {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: radial-gradient(
+        circle,
+        #fff36a 0%,
+        #ffd000 55%,
+        #ff8c00 100%
+      );
+      border: 3px solid #fff8a8;
+      border-radius: 50%;
+      box-shadow: 0 0 18px #ffd000;
+      z-index: 6;
+      animation: secretCoinSpin .7s linear infinite;
+    }
+
+    .secretCoin::after {
+      content: "$";
+      position: absolute;
+      color: #9b6200;
+      font-weight: bold;
+      font-size: 19px;
+      left: 8px;
+      top: 2px;
+    }
+
+    @keyframes secretCoinSpin {
+      50% {
+        transform: scaleX(.35);
+      }
+    }
+
+    #secretHud {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .secretHudBox {
+      background: rgba(10,10,25,.8);
+      border: 2px solid #7c4dff;
+      border-radius: 12px;
+      padding: 9px 15px;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(124,77,255,.35);
+    }
+
+    #secretStart,
+    #secretOver {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(5,5,15,.82);
+      backdrop-filter: blur(7px);
+      z-index: 100;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #secretOver {
+      display: none;
+    }
+
+    #secretStart h1,
+    #secretOver h2 {
+      margin: 0 0 10px;
+    }
+
+    #secretStart h1 {
+      font-size: clamp(42px, 9vw, 90px);
+      font-weight: 900;
+      background: linear-gradient(
+        90deg,
+        #ff4fd8,
+        #7c4dff,
+        #36e4ff
+      );
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .secretButton {
+      margin-top: 25px;
+      padding: 15px 35px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff4fd8, #7c4dff);
+      color: white;
+      font-size: 21px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255,79,216,.4);
+    }
+
+    .secretButton:hover {
+      transform: scale(1.05);
+    }
+
+    #secretBack {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 200;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid #7c4dff;
+      background: rgba(10,10,25,.8);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #secretMobileJump {
+      position: absolute;
+      right: 20px;
+      bottom: 110px;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid white;
+      background: rgba(124,77,255,.65);
+      color: white;
+      font-size: 35px;
+      z-index: 50;
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      #secretMobileJump {
+        display: block;
+      }
+
+      #secretPlayer {
+        left: 60px;
+      }
+
+      .secretHudBox {
+        font-size: 14px;
+        padding: 7px 10px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+
   <div class="background-glow glow-one"></div>
   <div class="background-glow glow-two"></div>
 
@@ -20,28 +253,58 @@
         <div class="brand-sub">THE ULTIMATE GAME HUB</div>
       </div>
     </div>
-    <div class="online-pill"><span></span> 100+ games</div>
+
+    <div class="online-pill">
+      <span></span> 100+ games
+    </div>
   </header>
 
   <main>
     <section class="hero">
       <div class="hero-badge">🔥 THE GAMING ZONE</div>
+
       <h1>Play. Search. <span>Have Fun.</span></h1>
+
       <p>Find a game, smash the button, and enter the chaos.</p>
 
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input id="search" type="search" autocomplete="off"
-          placeholder="Search 100+ games..." aria-label="Search games">
-        <button id="clearSearch" class="clear-btn" aria-label="Clear search">×</button>
+
+        <input
+          id="search"
+          type="search"
+          autocomplete="off"
+          placeholder="Search 100+ games..."
+          aria-label="Search games"
+        >
+
+        <button
+          id="clearSearch"
+          class="clear-btn"
+          aria-label="Clear search"
+        >×</button>
       </div>
 
       <div class="filters">
-        <button class="filter active" data-filter="all">All Games</button>
-        <button class="filter" data-filter="action">⚡ Action</button>
-        <button class="filter" data-filter="arcade">🕹️ Arcade</button>
-        <button class="filter" data-filter="casual">😎 Casual</button>
-        <button class="filter" data-filter="strategy">🧠 Strategy</button>
+        <button class="filter active" data-filter="all">
+          All Games
+        </button>
+
+        <button class="filter" data-filter="action">
+          ⚡ Action
+        </button>
+
+        <button class="filter" data-filter="arcade">
+          🕹️ Arcade
+        </button>
+
+        <button class="filter" data-filter="casual">
+          😎 Casual
+        </button>
+
+        <button class="filter" data-filter="strategy">
+          🧠 Strategy
+        </button>
       </div>
     </section>
 
@@ -51,9 +314,12 @@
           <span class="eyebrow">START HERE</span>
           <h2>Featured Games</h2>
         </div>
+
         <span id="count" class="count"></span>
       </div>
+
       <div id="games" class="game-grid"></div>
+
       <div id="empty" class="empty hidden">
         <div class="empty-icon">🔎</div>
         <h3>No games found</h3>
@@ -68,6 +334,640 @@
     <small>Made for gamers • GitHub Pages ready</small>
   </footer>
 
+
+  <!-- ========================= -->
+  <!-- SECRET GYAT RUNNER GAME   -->
+  <!-- ========================= -->
+
+  <div id="secretGame">
+
+    <button id="secretBack">
+      ← BACK TO GAMES
+    </button>
+
+    <div id="secretHud">
+      <div class="secretHudBox">
+        🏆 Score: <span id="secretScore">0</span>
+      </div>
+
+      <div class="secretHudBox">
+        💰 Coins: <span id="secretCoins">0</span>
+      </div>
+
+      <div class="secretHudBox">
+        ⚡ Speed: <span id="secretSpeed">1</span>
+      </div>
+    </div>
+
+    <div id="secretPlayer"></div>
+
+    <div id="secretGround"></div>
+
+    <button id="secretMobileJump">
+      ⬆️
+    </button>
+
+    <div id="secretStart">
+
+      <h1>GYAT RUNNER</h1>
+
+      <p>
+        🏃 Run. Jump. Collect coins.
+      </p>
+
+      <p>
+        Don't get bonked.
+      </p>
+
+      <p>
+        Press <b>SPACE</b>, <b>↑</b>, or <b>W</b> to jump.
+      </p>
+
+      <button class="secretButton" id="secretStartButton">
+        PLAY NOW 🎮
+      </button>
+
+    </div>
+
+    <div id="secretOver">
+
+      <h2>💀 YOU GOT BONKED</h2>
+
+      <p>
+        Score:
+        <b id="secretFinalScore">0</b>
+      </p>
+
+      <p>
+        Coins:
+        <b id="secretFinalCoins">0</b>
+      </p>
+
+      <button class="secretButton" id="secretRestartButton">
+        TRY AGAIN 🔄
+      </button>
+
+    </div>
+
+  </div>
+
+
   <script src="script.js"></script>
+
+  <!-- Secret game code -->
+  <script>
+
+    const secretGame = document.getElementById("secretGame");
+    const secretPlayer = document.getElementById("secretPlayer");
+
+    const secretSearch = document.getElementById("search");
+
+    const secretScoreText =
+      document.getElementById("secretScore");
+
+    const secretCoinsText =
+      document.getElementById("secretCoins");
+
+    const secretSpeedText =
+      document.getElementById("secretSpeed");
+
+    const secretStart =
+      document.getElementById("secretStart");
+
+    const secretOver =
+      document.getElementById("secretOver");
+
+    const secretFinalScore =
+      document.getElementById("secretFinalScore");
+
+    const secretFinalCoins =
+      document.getElementById("secretFinalCoins");
+
+    const secretStartButton =
+      document.getElementById("secretStartButton");
+
+    const secretRestartButton =
+      document.getElementById("secretRestartButton");
+
+    const secretBack =
+      document.getElementById("secretBack");
+
+    const secretMobileJump =
+      document.getElementById("secretMobileJump");
+
+
+    let secretRunning = false;
+    let secretJumping = false;
+
+    let secretBottom = 90;
+    let secretVelocity = 0;
+
+    let secretScore = 0;
+    let secretCoins = 0;
+
+    let secretSpeed = 6;
+    let secretFrame = 0;
+
+    let secretObstacles = [];
+    let secretCoinsArray = [];
+
+    const secretGravity = 0.8;
+    const secretJumpPower = 15;
+
+
+    /* =========================
+       SECRET WORD
+       ========================= */
+
+    secretSearch.addEventListener("input", function() {
+
+      const text = secretSearch.value
+        .trim()
+        .toLowerCase();
+
+      if (text === "gyat") {
+
+        secretGame.style.display = "block";
+
+        secretSearch.value = "";
+
+        secretStart.style.display = "flex";
+        secretOver.style.display = "none";
+
+      }
+
+    });
+
+
+    /* =========================
+       START GAME
+       ========================= */
+
+    function startSecretGame() {
+
+      secretRunning = true;
+
+      secretStart.style.display = "none";
+      secretOver.style.display = "none";
+
+      secretScore = 0;
+      secretCoins = 0;
+      secretSpeed = 6;
+      secretFrame = 0;
+
+      secretScoreText.textContent = "0";
+      secretCoinsText.textContent = "0";
+      secretSpeedText.textContent = "1";
+
+      clearSecretObjects();
+
+      secretBottom = 90;
+      secretVelocity = 0;
+      secretJumping = false;
+
+      secretPlayer.style.bottom =
+        secretBottom + "px";
+
+      requestAnimationFrame(secretGameLoop);
+
+    }
+
+
+    /* =========================
+       CLEAR OBJECTS
+       ========================= */
+
+    function clearSecretObjects() {
+
+      secretObstacles.forEach(function(item) {
+        item.element.remove();
+      });
+
+      secretCoinsArray.forEach(function(item) {
+        item.element.remove();
+      });
+
+      secretObstacles = [];
+      secretCoinsArray = [];
+
+    }
+
+
+    /* =========================
+       JUMP
+       ========================= */
+
+    function secretJump() {
+
+      if (!secretRunning) return;
+
+      if (!secretJumping) {
+
+        secretJumping = true;
+
+        secretVelocity = secretJumpPower;
+
+      }
+
+    }
+
+
+    /* =========================
+       OBSTACLE
+       ========================= */
+
+    function createSecretObstacle() {
+
+      const element =
+        document.createElement("div");
+
+      element.className =
+        "secretObstacle";
+
+      const x =
+        window.innerWidth + 50;
+
+      element.style.left =
+        x + "px";
+
+      secretGame.appendChild(element);
+
+      secretObstacles.push({
+
+        element: element,
+        x: x
+
+      });
+
+    }
+
+
+    /* =========================
+       COIN
+       ========================= */
+
+    function createSecretCoin() {
+
+      const element =
+        document.createElement("div");
+
+      element.className =
+        "secretCoin";
+
+      const x =
+        window.innerWidth + 50;
+
+      const heights =
+        [140, 180, 220, 260];
+
+      const height =
+        heights[
+          Math.floor(
+            Math.random() * heights.length
+          )
+        ];
+
+      element.style.left =
+        x + "px";
+
+      element.style.bottom =
+        height + "px";
+
+      secretGame.appendChild(element);
+
+      secretCoinsArray.push({
+
+        element: element,
+        x: x,
+        height: height
+
+      });
+
+    }
+
+
+    /* =========================
+       COLLISION
+       ========================= */
+
+    function secretCollision(a, b) {
+
+      const ar =
+        a.getBoundingClientRect();
+
+      const br =
+        b.getBoundingClientRect();
+
+      return !(
+        ar.right < br.left ||
+        ar.left > br.right ||
+        ar.bottom < br.top ||
+        ar.top > br.bottom
+      );
+
+    }
+
+
+    /* =========================
+       GAME OVER
+       ========================= */
+
+    function secretGameOver() {
+
+      secretRunning = false;
+
+      secretFinalScore.textContent =
+        Math.floor(secretScore);
+
+      secretFinalCoins.textContent =
+        secretCoins;
+
+      secretOver.style.display =
+        "flex";
+
+    }
+
+
+    /* =========================
+       GAME LOOP
+       ========================= */
+
+    function secretGameLoop() {
+
+      if (!secretRunning) return;
+
+
+      secretFrame++;
+
+
+      /* PLAYER PHYSICS */
+
+      if (secretJumping) {
+
+        secretBottom +=
+          secretVelocity;
+
+        secretVelocity -=
+          secretGravity;
+
+
+        if (secretBottom <= 90) {
+
+          secretBottom = 90;
+
+          secretVelocity = 0;
+
+          secretJumping = false;
+
+        }
+
+
+        secretPlayer.style.bottom =
+          secretBottom + "px";
+
+      }
+
+
+      /* SPEED */
+
+      secretSpeed =
+        6 +
+        Math.floor(secretScore / 500) * 0.7;
+
+
+      secretSpeedText.textContent =
+        Math.max(
+          1,
+          Math.floor(secretSpeed / 6)
+        );
+
+
+      /* SCORE */
+
+      secretScore +=
+        0.12 * secretSpeed;
+
+      secretScoreText.textContent =
+        Math.floor(secretScore);
+
+
+      /* OBSTACLES */
+
+      if (
+        secretFrame %
+        Math.max(
+          55,
+          115 -
+          Math.floor(secretScore / 120)
+        ) === 0
+      ) {
+
+        createSecretObstacle();
+
+      }
+
+
+      /* COINS */
+
+      if (secretFrame % 100 === 0) {
+
+        createSecretCoin();
+
+      }
+
+
+      /* MOVE OBSTACLES */
+
+      for (
+        let i = secretObstacles.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        const obstacle =
+          secretObstacles[i];
+
+        obstacle.x -= secretSpeed;
+
+        obstacle.element.style.left =
+          obstacle.x + "px";
+
+
+        if (
+          secretCollision(
+            secretPlayer,
+            obstacle.element
+          )
+        ) {
+
+          secretGameOver();
+
+          return;
+
+        }
+
+
+        if (obstacle.x < -100) {
+
+          obstacle.element.remove();
+
+          secretObstacles.splice(i, 1);
+
+        }
+
+      }
+
+
+      /* MOVE COINS */
+
+      for (
+        let i = secretCoinsArray.length - 1;
+        i >= 0;
+        i--
+      ) {
+
+        const coin =
+          secretCoinsArray[i];
+
+        coin.x -= secretSpeed;
+
+        coin.element.style.left =
+          coin.x + "px";
+
+
+        if (
+          secretCollision(
+            secretPlayer,
+            coin.element
+          )
+        ) {
+
+          secretCoins++;
+
+          secretCoinsText.textContent =
+            secretCoins;
+
+          coin.element.remove();
+
+          secretCoinsArray.splice(i, 1);
+
+          continue;
+
+        }
+
+
+        if (coin.x < -100) {
+
+          coin.element.remove();
+
+          secretCoinsArray.splice(i, 1);
+
+        }
+
+      }
+
+
+      requestAnimationFrame(
+        secretGameLoop
+      );
+
+    }
+
+
+    /* =========================
+       BUTTONS
+       ========================= */
+
+    secretStartButton.addEventListener(
+      "click",
+      startSecretGame
+    );
+
+
+    secretRestartButton.addEventListener(
+      "click",
+      startSecretGame
+    );
+
+
+    secretBack.addEventListener(
+      "click",
+      function() {
+
+        secretRunning = false;
+
+        clearSecretObjects();
+
+        secretGame.style.display =
+          "none";
+
+      }
+    );
+
+
+    /* =========================
+       KEYBOARD
+       ========================= */
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.code === "Space" ||
+          event.code === "ArrowUp" ||
+          event.code === "KeyW"
+        ) {
+
+          if (
+            secretGame.style.display ===
+            "block"
+          ) {
+
+            event.preventDefault();
+
+            secretJump();
+
+          }
+
+        }
+
+        if (
+          event.code === "Escape" &&
+          secretGame.style.display ===
+          "block"
+        ) {
+
+          secretRunning = false;
+
+          clearSecretObjects();
+
+          secretGame.style.display =
+            "none";
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    secretMobileJump.addEventListener(
+      "pointerdown",
+      function(event) {
+
+        event.preventDefault();
+
+        secretJump();
+
+      }
+    );
+
+  </script>
+
 </body>
 </html>
+```
