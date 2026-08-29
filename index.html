@@ -2,1934 +2,385 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090914">
-<title>A Gamer's Gyat 🎮</title>
-
-<link rel="icon" href="popcat.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css">
-
-<style>
-
-/* =========================================================
-   SECRET GYAT RUNNER
-   ========================================================= */
-
-#secretGame {
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    overflow:hidden;
-    color:white;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#080812;
-}
-
-#secretGame * {
-    box-sizing:border-box;
-}
-
-/* ---------- LEVEL SELECT ---------- */
-
-#levelScreen {
-    position:absolute;
-    inset:0;
-    overflow-y:auto;
-    padding:35px 20px 60px;
-    background:
-        radial-gradient(circle at 50% 0%,#30306d 0%,#14142b 40%,#07070d 100%);
-}
-
-.levelHeader {
-    text-align:center;
-    margin-bottom:30px;
-}
-
-.levelHeader h1 {
-    margin:0;
-    font-size:clamp(45px,9vw,85px);
-    font-weight:1000;
-    background:linear-gradient(90deg,#ff4fd8,#7c4dff,#36e4ff);
-    -webkit-background-clip:text;
-    color:transparent;
-}
-
-.levelHeader p {
-    color:#bbb;
-    font-size:18px;
-}
-
-.levelGrid {
-    width:min(1050px,100%);
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-    gap:18px;
-}
-
-.levelCard {
-    position:relative;
-    min-height:190px;
-    border-radius:20px;
-    border:2px solid #45456d;
-    background:rgba(18,18,40,.9);
-    padding:20px;
-    cursor:pointer;
-    transition:.2s;
-    overflow:hidden;
-}
-
-.levelCard:hover:not(.locked) {
-    transform:translateY(-6px) scale(1.02);
-    border-color:#ff4fd8;
-    box-shadow:0 0 30px rgba(255,79,216,.3);
-}
-
-.levelCard.locked {
-    cursor:not-allowed;
-    opacity:.55;
-}
-
-.levelNumber {
-    font-size:14px;
-    color:#aaa;
-    font-weight:bold;
-}
-
-.levelIcon {
-    font-size:50px;
-    margin:8px 0;
-}
-
-.levelName {
-    font-size:22px;
-    font-weight:900;
-}
-
-.levelDescription {
-    color:#aaa;
-    font-size:13px;
-    margin-top:5px;
-}
-
-.levelStars {
-    margin-top:12px;
-    font-size:19px;
-}
-
-.lock {
-    position:absolute;
-    top:18px;
-    right:18px;
-    font-size:25px;
-}
-
-.backNormal {
-    position:fixed;
-    top:15px;
-    left:15px;
-    z-index:200;
-    padding:10px 16px;
-    border:2px solid #7c4dff;
-    border-radius:10px;
-    color:white;
-    background:rgba(8,8,20,.85);
-    cursor:pointer;
-    font-weight:bold;
-}
-
-/* ---------- GAME ---------- */
-
-#gameWorld {
-    position:absolute;
-    inset:0;
-    overflow:hidden;
-}
-
-#gameGround {
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:100%;
-    height:85px;
-    background:
-        repeating-linear-gradient(
-            135deg,
-            #17172b 0px,
-            #17172b 20px,
-            #202040 20px,
-            #202040 40px
-        );
-    border-top:4px solid #7c4dff;
-    box-shadow:0 -5px 25px rgba(124,77,255,.5);
-}
-
-/* ---------- PLAYER ---------- */
-
-#runnerPlayer {
-    position:absolute;
-    width:55px;
-    height:55px;
-    left:100px;
-    bottom:85px;
-    z-index:20;
-    border:3px solid white;
-    border-radius:16px;
-    background:linear-gradient(135deg,#ff4fd8,#7c4dff);
-    box-shadow:
-        0 0 15px #ff4fd8,
-        0 0 35px rgba(124,77,255,.7);
-}
-
-#runnerPlayer::before {
-    content:"😎";
-    position:absolute;
-    left:8px;
-    top:7px;
-    font-size:31px;
-}
-
-/* ---------- HUD ---------- */
-
-#runnerHUD {
-    position:absolute;
-    top:15px;
-    left:15px;
-    right:15px;
-    z-index:50;
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.hudItem {
-    padding:9px 14px;
-    border:2px solid #7c4dff;
-    border-radius:12px;
-    background:rgba(8,8,20,.8);
-    font-weight:bold;
-    box-shadow:0 0 15px rgba(124,77,255,.3);
-}
-
-/* ---------- OBSTACLES ---------- */
-
-.runnerObstacle {
-    position:absolute;
-    bottom:85px;
-    width:45px;
-    height:65px;
-    z-index:10;
-    border:3px solid #ff8b8b;
-    border-radius:8px;
-    background:linear-gradient(135deg,#ff3838,#8b0000);
-    box-shadow:0 0 18px rgba(255,0,0,.7);
-}
-
-.runnerObstacle::after {
-    content:"💀";
-    position:absolute;
-    left:7px;
-    top:15px;
-    font-size:25px;
-}
-
-.tallObstacle {
-    height:95px;
-}
-
-.miniObstacle {
-    width:65px;
-    height:35px;
-}
-
-/* ---------- COINS ---------- */
-
-.runnerCoin {
-    position:absolute;
-    width:32px;
-    height:32px;
-    z-index:15;
-    border-radius:50%;
-    border:3px solid #fff8a8;
-    background:radial-gradient(circle,#fff36a,#ffd000 55%,#ff8c00);
-    box-shadow:0 0 20px #ffd000;
-    animation:coinSpin .7s linear infinite;
-}
-
-.runnerCoin::after {
-    content:"$";
-    position:absolute;
-    left:8px;
-    top:2px;
-    color:#8d5c00;
-    font-size:19px;
-    font-weight:bold;
-}
-
-@keyframes coinSpin {
-    50% { transform:scaleX(.35); }
-}
-
-/* ---------- GEMS ---------- */
-
-.runnerGem {
-    position:absolute;
-    width:30px;
-    height:30px;
-    z-index:15;
-    transform:rotate(45deg);
-    background:#36e4ff;
-    border:3px solid white;
-    box-shadow:0 0 20px #36e4ff;
-    animation:gemPulse .8s ease-in-out infinite alternate;
-}
-
-@keyframes gemPulse {
-    from { transform:rotate(45deg) scale(.85); }
-    to { transform:rotate(45deg) scale(1.08); }
-}
-
-/* ---------- GAME START ---------- */
-
-#gameStart,
-#gameOver,
-#levelComplete {
-    position:absolute;
-    inset:0;
-    z-index:100;
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:20px;
-    background:rgba(5,5,15,.84);
-    backdrop-filter:blur(7px);
-}
-
-#gameStart {
-    display:flex;
-}
-
-.gameTitle {
-    font-size:clamp(45px,9vw,90px);
-    font-weight:1000;
-    margin:0 0 8px;
-    background:linear-gradient(90deg,#ff4fd8,#7c4dff,#36e4ff);
-    -webkit-background-clip:text;
-    color:transparent;
-}
-
-.bigTitle {
-    font-size:clamp(35px,7vw,65px);
-    font-weight:1000;
-    margin-bottom:10px;
-}
-
-.gameButton {
-    margin-top:22px;
-    padding:14px 30px;
-    border:none;
-    border-radius:14px;
-    color:white;
-    background:linear-gradient(135deg,#ff4fd8,#7c4dff);
-    font-size:20px;
-    font-weight:900;
-    cursor:pointer;
-    box-shadow:0 0 25px rgba(255,79,216,.4);
-}
-
-.gameButton:hover {
-    transform:scale(1.06);
-}
-
-.starResult {
-    font-size:42px;
-    margin:10px;
-}
-
-/* ---------- MOBILE ---------- */
-
-#jumpButton {
-    display:none;
-    position:absolute;
-    right:20px;
-    bottom:105px;
-    width:85px;
-    height:85px;
-    z-index:80;
-    border-radius:50%;
-    border:3px solid white;
-    background:rgba(124,77,255,.7);
-    color:white;
-    font-size:30px;
-}
-
-@media(max-width:700px) {
-
-    #jumpButton {
-        display:block;
-    }
-
-    #runnerPlayer {
-        left:60px;
-    }
-
-    .hudItem {
-        font-size:13px;
-        padding:7px 10px;
-    }
-
-    .levelGrid {
-        grid-template-columns:repeat(2,1fr);
-    }
-
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090914">
+  <title>A Gamer's Gyat 🎮</title>
+  <link rel="icon" href="popcat.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- =========================================================
-     YOUR NORMAL SITE
-     ========================================================= -->
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
 
-<div class="background-glow glow-one"></div>
-<div class="background-glow glow-two"></div>
-
-<header class="topbar">
-
+  <header class="topbar">
     <div class="brand">
+      <img src="popcat.svg" alt="Popcat-style cat logo">
 
-        <img src="popcat.svg" alt="Popcat-style cat logo">
-
-        <div>
-
-            <div class="brand-name">
-                A Gamer's <span>Gyat</span>
-            </div>
-
-            <div class="brand-sub">
-                THE ULTIMATE GAME HUB
-            </div>
-
+      <div>
+        <div class="brand-name">
+          A Gamer's <span>Gyat</span>
         </div>
 
+        <div class="brand-sub">
+          THE ULTIMATE GAME HUB
+        </div>
+      </div>
     </div>
 
     <div class="online-pill">
-        <span></span> 100+ games
+      <span></span> 100+ games
     </div>
+  </header>
 
-</header>
+  <main>
 
-<main>
+    <section class="hero">
 
-<section class="hero">
-
-    <div class="hero-badge">
+      <div class="hero-badge">
         🔥 THE GAMING ZONE
-    </div>
+      </div>
 
-    <h1>
+      <h1>
         Play. Search. <span>Have Fun.</span>
-    </h1>
+      </h1>
 
-    <p>
+      <p>
         Find a game, smash the button, and enter the chaos.
-    </p>
+      </p>
 
-    <div class="search-wrap">
+      <div class="search-wrap">
 
         <span class="search-icon">⌕</span>
 
         <input
-            id="search"
-            type="search"
-            autocomplete="off"
-            placeholder="Search 100+ games..."
-            aria-label="Search games"
+          id="search"
+          type="search"
+          autocomplete="off"
+          placeholder="Search 100+ games..."
+          aria-label="Search games"
         >
 
         <button
-            id="clearSearch"
-            class="clear-btn"
-            aria-label="Clear search"
+          id="clearSearch"
+          class="clear-btn"
+          aria-label="Clear search"
         >×</button>
 
-    </div>
+      </div>
 
-    <div class="filters">
+      <div class="filters">
 
         <button class="filter active" data-filter="all">
-            All Games
+          All Games
         </button>
 
         <button class="filter" data-filter="action">
-            ⚡ Action
+          ⚡ Action
         </button>
 
         <button class="filter" data-filter="arcade">
-            🕹️ Arcade
+          🕹️ Arcade
         </button>
 
         <button class="filter" data-filter="casual">
-            😎 Casual
+          😎 Casual
         </button>
 
         <button class="filter" data-filter="strategy">
-            🧠 Strategy
+          🧠 Strategy
         </button>
 
-    </div>
+      </div>
 
-</section>
+    </section>
 
-<section class="featured">
+    <section class="featured">
 
-    <div class="section-title">
+      <div class="section-title">
 
         <div>
+          <span class="eyebrow">
+            START HERE
+          </span>
 
-            <span class="eyebrow">
-                START HERE
-            </span>
-
-            <h2>
-                Featured Games
-            </h2>
-
+          <h2>
+            Featured Games
+          </h2>
         </div>
 
         <span id="count" class="count"></span>
 
-    </div>
+      </div>
 
-    <div id="games" class="game-grid"></div>
+      <div id="games" class="game-grid"></div>
 
-    <div id="empty" class="empty hidden">
+      <div id="empty" class="empty hidden">
 
         <div class="empty-icon">🔎</div>
 
         <h3>
-            No games found
+          No games found
         </h3>
 
         <p>
-            Try another search.
+          Try another search.
         </p>
 
-    </div>
+      </div>
 
-</section>
+    </section>
 
-</main>
+  </main>
 
-<footer>
+  <footer>
 
     <img src="popcat.svg" alt="">
 
     <span>
-        A Gamer's Gyat
+      A Gamer's Gyat
     </span>
 
     <small>
-        Made for gamers • GitHub Pages ready
+      Made for gamers • GitHub Pages ready
     </small>
 
-</footer>
+  </footer>
 
 
-<!-- =========================================================
-     SECRET GAME
-     ========================================================= -->
+  <!-- ==================================================
+       SECRET GYAT RUNNER
+       ================================================== -->
 
-<div id="secretGame">
+  <div id="gyatGame">
 
     <!-- LEVEL SELECT -->
 
-    <div id="levelScreen">
+    <div id="gyatLevels">
 
-        <button class="backNormal" id="leaveGame">
-            ← BACK TO GAMES
-        </button>
+      <button class="gyat-back" id="gyatExit">
+        ← BACK TO GAMES
+      </button>
 
-        <div class="levelHeader">
+      <div class="gyat-level-header">
 
-            <h1>
-                GYAT RUNNER
-            </h1>
+        <div class="gyat-logo">
+          GYAT RUNNER
+        </div>
 
-            <p>
-                Choose your level.
-                Beat levels to unlock more.
-            </p>
+        <p>
+          Choose your challenge.
+          Beat levels to unlock more.
+        </p>
+
+        <div class="gyat-currency">
+
+          💰 <span id="menuCoins">0</span>
+
+          &nbsp;&nbsp;
+
+          💎 <span id="menuGems">0</span>
 
         </div>
 
-        <div class="levelGrid" id="levelGrid"></div>
+      </div>
+
+      <div class="gyat-menu-buttons">
+
+        <button id="shopButton" class="gyat-menu-button">
+          🛒 SHOP
+        </button>
+
+      </div>
+
+      <div id="levelCards" class="gyat-level-grid"></div>
+
+    </div>
+
+
+    <!-- SHOP -->
+
+    <div id="gyatShop">
+
+      <button class="gyat-back" id="shopBack">
+        ← LEVELS
+      </button>
+
+      <div class="shop-header">
+
+        <h1>
+          🛒 GYAT SHOP
+        </h1>
+
+        <p>
+          Spend your hard-earned loot.
+        </p>
+
+        <div class="shop-money">
+
+          💰 <span id="shopCoins">0</span>
+
+          &nbsp;&nbsp;
+
+          💎 <span id="shopGems">0</span>
+
+        </div>
+
+      </div>
+
+      <div id="shopItems" class="shop-grid"></div>
 
     </div>
 
 
     <!-- ACTUAL GAME -->
 
-    <div id="gameWorld">
+    <div id="gyatWorld">
 
-        <button class="backNormal" id="gameBack">
-            ← LEVELS
+      <button class="gyat-back" id="gameLevels">
+        ← LEVELS
+      </button>
+
+      <div id="gyatHUD">
+
+        <div class="gyat-hud-item">
+          🗺️ <span id="hudLevel">1</span>
+        </div>
+
+        <div class="gyat-hud-item">
+          🏆 <span id="hudScore">0</span>
+        </div>
+
+        <div class="gyat-hud-item">
+          💰 <span id="hudCoins">0</span>
+        </div>
+
+        <div class="gyat-hud-item">
+          💎 <span id="hudGems">0</span>
+        </div>
+
+        <div class="gyat-hud-item">
+          ❤️ <span id="hudLives">3</span>
+        </div>
+
+        <div class="gyat-hud-item">
+          🛡️ <span id="hudShield">0</span>
+        </div>
+
+      </div>
+
+      <div id="gyatPlayer">
+        😎
+      </div>
+
+      <div id="gyatGround"></div>
+
+      <div id="gyatEffects"></div>
+
+      <button id="gyatJump">
+        ⬆️
+      </button>
+
+
+      <!-- START -->
+
+      <div id="gyatStart">
+
+        <div class="gyat-big-title">
+          LEVEL <span id="startNumber">1</span>
+        </div>
+
+        <div id="startName" class="gyat-level-name">
+          GYAT CITY
+        </div>
+
+        <p id="startDescription">
+          Reach the target score!
+        </p>
+
+        <p id="startObjective"></p>
+
+        <button id="startButton" class="gyat-action">
+          START LEVEL 🎮
         </button>
 
-        <div id="runnerHUD">
+      </div>
 
-            <div class="hudItem">
-                🗺️ <span id="hudLevel">1</span>
-            </div>
 
-            <div class="hudItem">
-                🏆 <span id="hudScore">0</span>
-            </div>
+      <!-- GAME OVER -->
 
-            <div class="hudItem">
-                💰 <span id="hudCoins">0</span>
-            </div>
+      <div id="gyatOver">
 
-            <div class="hudItem">
-                💎 <span id="hudGems">0</span>
-            </div>
-
-            <div class="hudItem">
-                ❤️ <span id="hudLives">3</span>
-            </div>
-
+        <div class="gyat-big-title">
+          💀 GAME OVER
         </div>
 
-        <div id="runnerPlayer"></div>
+        <p>
+          Score: <b id="overScore">0</b>
+        </p>
 
-        <div id="gameGround"></div>
+        <p>
+          Coins: <b id="overCoins">0</b>
+        </p>
 
-        <button id="jumpButton">
-            ⬆️
+        <p>
+          Gems: <b id="overGems">0</b>
+        </p>
+
+        <button id="retryButton" class="gyat-action">
+          TRY AGAIN 🔄
         </button>
 
+        <button id="overLevelButton" class="gyat-action secondary">
+          LEVEL SELECT 🗺️
+        </button>
 
-        <!-- START -->
+      </div>
 
-        <div id="gameStart">
 
-            <div class="gameTitle">
-                LEVEL <span id="startLevel">1</span>
-            </div>
+      <!-- LEVEL COMPLETE -->
 
-            <div class="bigTitle" id="startLevelName">
-                GYAT CITY
-            </div>
+      <div id="gyatComplete">
 
-            <p id="startObjective">
-                Reach the target score!
-            </p>
-
-            <p>
-                SPACE / ↑ / W = Jump
-            </p>
-
-            <button class="gameButton" id="startLevelButton">
-                START LEVEL 🎮
-            </button>
-
+        <div class="gyat-big-title">
+          🏆 LEVEL COMPLETE!
         </div>
 
-
-        <!-- GAME OVER -->
-
-        <div id="gameOver">
-
-            <div class="bigTitle">
-                💀 GAME OVER
-            </div>
-
-            <p>
-                Score:
-                <b id="overScore">0</b>
-            </p>
-
-            <p>
-                Coins:
-                <b id="overCoins">0</b>
-            </p>
-
-            <p>
-                Gems:
-                <b id="overGems">0</b>
-            </p>
-
-            <button class="gameButton" id="retryButton">
-                TRY AGAIN 🔄
-            </button>
-
-            <button class="gameButton" id="overLevelsButton">
-                LEVEL SELECT 🗺️
-            </button>
-
+        <div id="resultStars" class="result-stars">
+          ⭐⭐⭐
         </div>
 
+        <p>
+          Score: <b id="completeScore">0</b>
+        </p>
 
-        <!-- COMPLETE -->
+        <p>
+          Coins: <b id="completeCoins">0</b>
+        </p>
 
-        <div id="levelComplete">
+        <p>
+          Gems: <b id="completeGems">0</b>
+        </p>
 
-            <div class="bigTitle">
-                🏆 LEVEL COMPLETE!
-            </div>
+        <button id="nextButton" class="gyat-action">
+          NEXT LEVEL ➡️
+        </button>
 
-            <div class="starResult" id="starResult">
-                ⭐⭐⭐
-            </div>
+        <button id="completeLevelButton" class="gyat-action secondary">
+          LEVEL SELECT 🗺️
+        </button>
 
-            <p>
-                Score:
-                <b id="completeScore">0</b>
-            </p>
-
-            <p>
-                Coins:
-                <b id="completeCoins">0</b>
-            </p>
-
-            <p>
-                Gems:
-                <b id="completeGems">0</b>
-            </p>
-
-            <button class="gameButton" id="nextLevelButton">
-                NEXT LEVEL ➡️
-            </button>
-
-            <button class="gameButton" id="completeLevelsButton">
-                LEVEL SELECT 🗺️
-            </button>
-
-        </div>
+      </div>
 
     </div>
 
-</div>
+  </div>
 
 
-<script src="script.js"></script>
-
-<script>
-
-/* =========================================================
-   SECRET ACTIVATION
-   ========================================================= */
-
-const searchBox = document.getElementById("search");
-const secretGame = document.getElementById("secretGame");
-
-searchBox.addEventListener("input",function(){
-
-    if(
-        searchBox.value
-        .trim()
-        .toLowerCase()
-        === "gyat"
-    ){
-
-        searchBox.value = "";
-
-        secretGame.style.display = "block";
-
-        showLevels();
-
-    }
-
-});
-
-
-/* =========================================================
-   LEVEL DATA
-   ========================================================= */
-
-const levels = [
-
-    {
-        name:"GYAT CITY",
-        icon:"🏙️",
-        description:"Your first run.",
-        target:500,
-        speed:6,
-        spawn:110
-    },
-
-    {
-        name:"NEON HIGHWAY",
-        icon:"🌃",
-        description:"Things are getting faster.",
-        target:800,
-        speed:7,
-        spawn:100
-    },
-
-    {
-        name:"MEME DESERT",
-        icon:"🏜️",
-        description:"Watch your step.",
-        target:1100,
-        speed:8,
-        spawn:90
-    },
-
-    {
-        name:"SPACE GYAT",
-        icon:"🚀",
-        description:"Gravity? What's that?",
-        target:1400,
-        speed:8.5,
-        spawn:85
-    },
-
-    {
-        name:"LAVA ZONE",
-        icon:"🌋",
-        description:"Don't fall asleep.",
-        target:1700,
-        speed:9,
-        spawn:80
-    },
-
-    {
-        name:"CYBER CITY",
-        icon:"🤖",
-        description:"Maximum chaos.",
-        target:2000,
-        speed:9.5,
-        spawn:75
-    },
-
-    {
-        name:"SKY TEMPLE",
-        icon:"☁️",
-        description:"The obstacles are brutal.",
-        target:2400,
-        speed:10,
-        spawn:70
-    },
-
-    {
-        name:"GLITCH WORLD",
-        icon:"👾",
-        description:"Reality is breaking.",
-        target:2800,
-        speed:10.5,
-        spawn:67
-    },
-
-    {
-        name:"THE VOID",
-        icon:"🌀",
-        description:"Almost there...",
-        target:3300,
-        speed:11,
-        spawn:64
-    },
-
-    {
-        name:"GYAT KINGDOM",
-        icon:"👑",
-        description:"The final challenge.",
-        target:4000,
-        speed:12,
-        spawn:60
-    }
-
-];
-
-
-/* =========================================================
-   PROGRESS
-   ========================================================= */
-
-let unlockedLevels =
-    parseInt(
-        localStorage.getItem(
-            "gyatRunnerUnlocked"
-        )
-    ) || 3;
-
-if(unlockedLevels < 3)
-    unlockedLevels = 3;
-
-if(unlockedLevels > 10)
-    unlockedLevels = 10;
-
-
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
-
-const levelScreen =
-    document.getElementById("levelScreen");
-
-const levelGrid =
-    document.getElementById("levelGrid");
-
-const gameWorld =
-    document.getElementById("gameWorld");
-
-const player =
-    document.getElementById("runnerPlayer");
-
-const gameStart =
-    document.getElementById("gameStart");
-
-const gameOver =
-    document.getElementById("gameOver");
-
-const levelComplete =
-    document.getElementById("levelComplete");
-
-
-/* =========================================================
-   GAME VARIABLES
-   ========================================================= */
-
-let currentLevel = 0;
-
-let running = false;
-
-let jumping = false;
-
-let playerBottom = 85;
-
-let velocityY = 0;
-
-let score = 0;
-
-let coins = 0;
-
-let gems = 0;
-
-let lives = 3;
-
-let frame = 0;
-
-let levelSpeed = 6;
-
-let obstacles = [];
-
-let coinObjects = [];
-
-let gemObjects = [];
-
-const gravity = .8;
-
-const jumpPower = 15;
-
-
-/* =========================================================
-   LEVEL SELECT
-   ========================================================= */
-
-function showLevels(){
-
-    levelScreen.style.display = "block";
-
-    gameWorld.style.display = "none";
-
-    levelGrid.innerHTML = "";
-
-    levels.forEach(
-        function(level,index){
-
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "levelCard";
-
-            const unlocked =
-                index + 1 <= unlockedLevels;
-
-            if(!unlocked)
-                card.classList.add("locked");
-
-            let stars =
-                localStorage.getItem(
-                    "gyatRunnerStars" + index
-                ) || 0;
-
-            let starText =
-                "";
-
-            for(let i=0;i<3;i++){
-
-                starText +=
-                    i < stars
-                    ? "⭐"
-                    : "☆";
-
-            }
-
-            card.innerHTML = `
-
-                ${
-                    !unlocked
-                    ? '<div class="lock">🔒</div>'
-                    : ''
-                }
-
-                <div class="levelNumber">
-                    LEVEL ${index+1}
-                </div>
-
-                <div class="levelIcon">
-                    ${level.icon}
-                </div>
-
-                <div class="levelName">
-                    ${level.name}
-                </div>
-
-                <div class="levelDescription">
-                    ${level.description}
-                </div>
-
-                <div class="levelStars">
-                    ${starText}
-                </div>
-
-            `;
-
-            if(unlocked){
-
-                card.addEventListener(
-                    "click",
-                    function(){
-                        openLevel(index);
-                    }
-                );
-
-            }
-
-            levelGrid.appendChild(card);
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   OPEN LEVEL
-   ========================================================= */
-
-function openLevel(index){
-
-    currentLevel = index;
-
-    levelScreen.style.display =
-        "none";
-
-    gameWorld.style.display =
-        "block";
-
-    gameStart.style.display =
-        "flex";
-
-    gameOver.style.display =
-        "none";
-
-    levelComplete.style.display =
-        "none";
-
-    document.getElementById(
-        "startLevel"
-    ).textContent =
-        index + 1;
-
-    document.getElementById(
-        "startLevelName"
-    ).textContent =
-        levels[index].name;
-
-    document.getElementById(
-        "startObjective"
-    ).textContent =
-        "Reach " +
-        levels[index].target +
-        " score!";
-
-}
-
-
-/* =========================================================
-   START
-   ========================================================= */
-
-function startLevel(){
-
-    running = true;
-
-    gameStart.style.display =
-        "none";
-
-    gameOver.style.display =
-        "none";
-
-    levelComplete.style.display =
-        "none";
-
-    score = 0;
-
-    coins = 0;
-
-    gems = 0;
-
-    lives = 3;
-
-    frame = 0;
-
-    levelSpeed =
-        levels[currentLevel].speed;
-
-    clearObjects();
-
-    playerBottom = 85;
-
-    velocityY = 0;
-
-    jumping = false;
-
-    player.style.bottom =
-        playerBottom + "px";
-
-    updateHUD();
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-}
-
-
-/* =========================================================
-   HUD
-   ========================================================= */
-
-function updateHUD(){
-
-    document.getElementById(
-        "hudLevel"
-    ).textContent =
-        currentLevel + 1;
-
-    document.getElementById(
-        "hudScore"
-    ).textContent =
-        Math.floor(score);
-
-    document.getElementById(
-        "hudCoins"
-    ).textContent =
-        coins;
-
-    document.getElementById(
-        "hudGems"
-    ).textContent =
-        gems;
-
-    document.getElementById(
-        "hudLives"
-    ).textContent =
-        lives;
-
-}
-
-
-/* =========================================================
-   JUMP
-   ========================================================= */
-
-function jump(){
-
-    if(!running)
-        return;
-
-    if(!jumping){
-
-        jumping = true;
-
-        velocityY =
-            jumpPower;
-
-    }
-
-}
-
-
-/* =========================================================
-   CREATE OBSTACLE
-   ========================================================= */
-
-function createObstacle(){
-
-    const obstacle =
-        document.createElement("div");
-
-    obstacle.className =
-        "runnerObstacle";
-
-    const random =
-        Math.random();
-
-    if(random < .2){
-
-        obstacle.classList.add(
-            "tallObstacle"
-        );
-
-    }
-    else if(random < .4){
-
-        obstacle.classList.add(
-            "miniObstacle"
-        );
-
-    }
-
-    const x =
-        window.innerWidth + 50;
-
-    obstacle.style.left =
-        x + "px";
-
-    gameWorld.appendChild(
-        obstacle
-    );
-
-    obstacles.push({
-
-        element:obstacle,
-
-        x:x
-
-    });
-
-}
-
-
-/* =========================================================
-   CREATE COIN
-   ========================================================= */
-
-function createCoin(){
-
-    const coin =
-        document.createElement("div");
-
-    coin.className =
-        "runnerCoin";
-
-    const x =
-        window.innerWidth + 50;
-
-    const height =
-        140 +
-        Math.random()*150;
-
-    coin.style.left =
-        x + "px";
-
-    coin.style.bottom =
-        height + "px";
-
-    gameWorld.appendChild(
-        coin
-    );
-
-    coinObjects.push({
-
-        element:coin,
-
-        x:x
-
-    });
-
-}
-
-
-/* =========================================================
-   CREATE GEM
-   ========================================================= */
-
-function createGem(){
-
-    const gem =
-        document.createElement("div");
-
-    gem.className =
-        "runnerGem";
-
-    const x =
-        window.innerWidth + 50;
-
-    const height =
-        160 +
-        Math.random()*130;
-
-    gem.style.left =
-        x + "px";
-
-    gem.style.bottom =
-        height + "px";
-
-    gameWorld.appendChild(
-        gem
-    );
-
-    gemObjects.push({
-
-        element:gem,
-
-        x:x
-
-    });
-
-}
-
-
-/* =========================================================
-   COLLISION
-   ========================================================= */
-
-function collision(a,b){
-
-    const ar =
-        a.getBoundingClientRect();
-
-    const br =
-        b.getBoundingClientRect();
-
-    return !(
-        ar.right < br.left ||
-        ar.left > br.right ||
-        ar.bottom < br.top ||
-        ar.top > br.bottom
-    );
-
-}
-
-
-/* =========================================================
-   HIT PLAYER
-   ========================================================= */
-
-function playerHit(){
-
-    lives--;
-
-    updateHUD();
-
-    if(lives <= 0){
-
-        endGame();
-
-    }
-
-}
-
-
-/* =========================================================
-   GAME OVER
-   ========================================================= */
-
-function endGame(){
-
-    running = false;
-
-    document.getElementById(
-        "overScore"
-    ).textContent =
-        Math.floor(score);
-
-    document.getElementById(
-        "overCoins"
-    ).textContent =
-        coins;
-
-    document.getElementById(
-        "overGems"
-    ).textContent =
-        gems;
-
-    gameOver.style.display =
-        "flex";
-
-}
-
-
-/* =========================================================
-   COMPLETE LEVEL
-   ========================================================= */
-
-function completeLevel(){
-
-    running = false;
-
-    const target =
-        levels[currentLevel].target;
-
-    let stars = 1;
-
-    if(score >= target * 1.4)
-        stars = 2;
-
-    if(
-        score >= target * 1.8 &&
-        lives === 3
-    )
-        stars = 3;
-
-    const oldStars =
-        parseInt(
-            localStorage.getItem(
-                "gyatRunnerStars" +
-                currentLevel
-            )
-        ) || 0;
-
-    if(stars > oldStars){
-
-        localStorage.setItem(
-            "gyatRunnerStars" +
-            currentLevel,
-            stars
-        );
-
-    }
-
-
-    /* Unlock next level */
-
-    if(
-        currentLevel + 1 <
-        levels.length
-    ){
-
-        if(
-            unlockedLevels <
-            currentLevel + 2
-        ){
-
-            unlockedLevels =
-                currentLevel + 2;
-
-            localStorage.setItem(
-                "gyatRunnerUnlocked",
-                unlockedLevels
-            );
-
-        }
-
-    }
-
-
-    document.getElementById(
-        "completeScore"
-    ).textContent =
-        Math.floor(score);
-
-    document.getElementById(
-        "completeCoins"
-    ).textContent =
-        coins;
-
-    document.getElementById(
-        "completeGems"
-    ).textContent =
-        gems;
-
-    document.getElementById(
-        "starResult"
-    ).textContent =
-        "⭐".repeat(stars) +
-        "☆".repeat(3-stars);
-
-    if(
-        currentLevel ===
-        levels.length - 1
-    ){
-
-        document.getElementById(
-            "nextLevelButton"
-        ).textContent =
-            "YOU BEAT EVERYTHING 👑";
-
-    }
-    else{
-
-        document.getElementById(
-            "nextLevelButton"
-        ).textContent =
-            "NEXT LEVEL ➡️";
-
-    }
-
-    levelComplete.style.display =
-        "flex";
-
-}
-
-
-/* =========================================================
-   CLEAR OBJECTS
-   ========================================================= */
-
-function clearObjects(){
-
-    obstacles.forEach(
-        o => o.element.remove()
-    );
-
-    coinObjects.forEach(
-        c => c.element.remove()
-    );
-
-    gemObjects.forEach(
-        g => g.element.remove()
-    );
-
-    obstacles = [];
-
-    coinObjects = [];
-
-    gemObjects = [];
-
-}
-
-
-/* =========================================================
-   GAME LOOP
-   ========================================================= */
-
-function gameLoop(){
-
-    if(!running)
-        return;
-
-    frame++;
-
-
-    /* PLAYER */
-
-    if(jumping){
-
-        playerBottom +=
-            velocityY;
-
-        velocityY -=
-            gravity;
-
-        if(playerBottom <= 85){
-
-            playerBottom = 85;
-
-            velocityY = 0;
-
-            jumping = false;
-
-        }
-
-        player.style.bottom =
-            playerBottom + "px";
-
-    }
-
-
-    /* SCORE */
-
-    score +=
-        .08 * levelSpeed;
-
-    updateHUD();
-
-
-    /* WIN */
-
-    if(
-        score >=
-        levels[currentLevel].target
-    ){
-
-        completeLevel();
-
-        return;
-
-    }
-
-
-    /* OBSTACLES */
-
-    const spawnRate =
-        Math.max(
-            48,
-            levels[currentLevel].spawn -
-            Math.floor(score/200)
-        );
-
-    if(frame % spawnRate === 0){
-
-        createObstacle();
-
-    }
-
-
-    /* COINS */
-
-    if(frame % 75 === 0){
-
-        createCoin();
-
-    }
-
-
-    /* GEMS */
-
-    if(frame % 180 === 0){
-
-        createGem();
-
-    }
-
-
-    /* MOVE OBSTACLES */
-
-    for(
-        let i=obstacles.length-1;
-        i>=0;
-        i--
-    ){
-
-        const obstacle =
-            obstacles[i];
-
-        obstacle.x -=
-            levelSpeed;
-
-        obstacle.element.style.left =
-            obstacle.x + "px";
-
-
-        if(
-            collision(
-                player,
-                obstacle.element
-            )
-        ){
-
-            obstacle.element.remove();
-
-            obstacles.splice(i,1);
-
-            playerHit();
-
-            continue;
-
-        }
-
-
-        if(obstacle.x < -120){
-
-            obstacle.element.remove();
-
-            obstacles.splice(i,1);
-
-        }
-
-    }
-
-
-    /* MOVE COINS */
-
-    for(
-        let i=coinObjects.length-1;
-        i>=0;
-        i--
-    ){
-
-        const coin =
-            coinObjects[i];
-
-        coin.x -=
-            levelSpeed;
-
-        coin.element.style.left =
-            coin.x + "px";
-
-
-        if(
-            collision(
-                player,
-                coin.element
-            )
-        ){
-
-            coins++;
-
-            coin.element.remove();
-
-            coinObjects.splice(i,1);
-
-            continue;
-
-        }
-
-
-        if(coin.x < -100){
-
-            coin.element.remove();
-
-            coinObjects.splice(i,1);
-
-        }
-
-    }
-
-
-    /* MOVE GEMS */
-
-    for(
-        let i=gemObjects.length-1;
-        i>=0;
-        i--
-    ){
-
-        const gem =
-            gemObjects[i];
-
-        gem.x -=
-            levelSpeed;
-
-        gem.element.style.left =
-            gem.x + "px";
-
-
-        if(
-            collision(
-                player,
-                gem.element
-            )
-        ){
-
-            gems++;
-
-            gem.element.remove();
-
-            gemObjects.splice(i,1);
-
-            continue;
-
-        }
-
-
-        if(gem.x < -100){
-
-            gem.element.remove();
-
-            gemObjects.splice(i,1);
-
-        }
-
-    }
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
-
-}
-
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-document.getElementById(
-    "startLevelButton"
-).addEventListener(
-    "click",
-    startLevel
-);
-
-
-document.getElementById(
-    "retryButton"
-).addEventListener(
-    "click",
-    startLevel
-);
-
-
-document.getElementById(
-    "overLevelsButton"
-).addEventListener(
-    "click",
-    function(){
-
-        clearObjects();
-
-        gameOver.style.display =
-            "none";
-
-        showLevels();
-
-    }
-);
-
-
-document.getElementById(
-    "completeLevelsButton"
-).addEventListener(
-    "click",
-    function(){
-
-        clearObjects();
-
-        levelComplete.style.display =
-            "none";
-
-        showLevels();
-
-    }
-);
-
-
-document.getElementById(
-    "nextLevelButton"
-).addEventListener(
-    "click",
-    function(){
-
-        if(
-            currentLevel <
-            levels.length - 1
-        ){
-
-            openLevel(
-                currentLevel + 1
-            );
-
-        }
-        else{
-
-            showLevels();
-
-        }
-
-    }
-);
-
-
-document.getElementById(
-    "gameBack"
-).addEventListener(
-    "click",
-    function(){
-
-        running = false;
-
-        clearObjects();
-
-        showLevels();
-
-    }
-);
-
-
-document.getElementById(
-    "leaveGame"
-).addEventListener(
-    "click",
-    function(){
-
-        running = false;
-
-        clearObjects();
-
-        secretGame.style.display =
-            "none";
-
-    }
-);
-
-
-/* =========================================================
-   KEYBOARD
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function(event){
-
-        if(
-            secretGame.style.display !==
-            "block"
-        )
-            return;
-
-
-        if(
-            event.code === "Space" ||
-            event.code === "ArrowUp" ||
-            event.code === "KeyW"
-        ){
-
-            event.preventDefault();
-
-            jump();
-
-        }
-
-
-        if(
-            event.code === "Escape"
-        ){
-
-            running = false;
-
-            clearObjects();
-
-            showLevels();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-document.getElementById(
-    "jumpButton"
-).addEventListener(
-    "pointerdown",
-    function(event){
-
-        event.preventDefault();
-
-        jump();
-
-    }
-);
-
-</script>
+  <script src="script.js"></script>
+  <script src="gyat-runner.js"></script>
 
 </body>
 </html>
