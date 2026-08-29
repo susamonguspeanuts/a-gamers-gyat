@@ -146,3 +146,584 @@ footer small { margin-left:8px; }
   main, .topbar { width: calc(100% - 20px); }
   .game-grid { grid-template-columns: 1fr; }
 }
+```css
+/* =========================================================
+   GYAT RUNNER
+   ========================================================= */
+
+#gyatGame {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  overflow:hidden;
+  background:#080812;
+  color:white;
+  font-family:'Nunito',system-ui,sans-serif;
+}
+
+#gyatLevels,
+#gyatShop,
+#gyatWorld {
+  position:absolute;
+  inset:0;
+}
+
+#gyatLevels {
+  overflow-y:auto;
+  padding:80px 20px 60px;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(139,92,246,.4),
+      transparent 38%
+    ),
+    linear-gradient(
+      145deg,
+      #070711,
+      #15132d,
+      #070711
+    );
+}
+
+.gyat-back {
+  position:absolute;
+  top:18px;
+  left:18px;
+  z-index:500;
+  padding:10px 15px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:12px;
+  color:white;
+  background:rgba(10,10,25,.85);
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.gyat-level-header {
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.gyat-logo {
+  font-size:clamp(45px,9vw,85px);
+  font-weight:900;
+  letter-spacing:-4px;
+  background:linear-gradient(
+    90deg,
+    #ff4fd8,
+    #8b5cf6,
+    #22d3ee
+  );
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.gyat-level-header p {
+  color:#aaaabd;
+  font-size:17px;
+}
+
+.gyat-currency,
+.shop-money {
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 18px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  font-weight:900;
+}
+
+.gyat-menu-buttons {
+  display:flex;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+.gyat-menu-button {
+  border:0;
+  border-radius:13px;
+  padding:12px 25px;
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  color:white;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.gyat-level-grid {
+  width:min(1100px,100%);
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:16px;
+}
+
+.gyat-level-card {
+  position:relative;
+  min-height:190px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  background:rgba(20,20,40,.9);
+  cursor:pointer;
+  transition:.2s;
+  overflow:hidden;
+}
+
+.gyat-level-card:hover:not(.locked) {
+  transform:translateY(-6px);
+  border-color:#ec4899;
+  box-shadow:0 15px 45px rgba(236,72,153,.2);
+}
+
+.gyat-level-card.locked {
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.gyat-level-number {
+  color:#8f8fa5;
+  font-size:12px;
+  font-weight:900;
+}
+
+.gyat-level-icon {
+  font-size:48px;
+  margin:7px 0;
+}
+
+.gyat-level-card h3 {
+  margin:0;
+  font-size:21px;
+}
+
+.gyat-level-card p {
+  color:#85859c;
+  font-size:12px;
+}
+
+.gyat-card-stars {
+  margin-top:12px;
+  font-size:18px;
+}
+
+.gyat-lock {
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:23px;
+}
+
+/* SHOP */
+
+#gyatShop {
+  display:none;
+  overflow-y:auto;
+  padding:75px 20px 50px;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(34,211,238,.18),
+      transparent 35%
+    ),
+    #080812;
+}
+
+.shop-header {
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.shop-header h1 {
+  font-size:50px;
+  margin:0;
+}
+
+.shop-header p {
+  color:#aaaabd;
+}
+
+.shop-grid {
+  width:min(900px,100%);
+  margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+}
+
+.shop-item {
+  padding:20px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(25,25,45,.9);
+  text-align:center;
+}
+
+.shop-item-icon {
+  font-size:48px;
+}
+
+.shop-item h3 {
+  margin:10px 0 4px;
+}
+
+.shop-item p {
+  color:#9090a8;
+  font-size:13px;
+  min-height:38px;
+}
+
+.shop-price {
+  margin:12px 0;
+  font-weight:900;
+}
+
+.shop-buy {
+  width:100%;
+  border:0;
+  padding:11px;
+  border-radius:12px;
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  color:white;
+  font-family:inherit;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.shop-buy:disabled {
+  opacity:.4;
+  cursor:not-allowed;
+}
+
+/* WORLD */
+
+#gyatWorld {
+  display:none;
+  overflow:hidden;
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      #30306a,
+      #101027 45%,
+      #06060d
+    );
+}
+
+#gyatGround {
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:85px;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #17172b 0px,
+      #17172b 20px,
+      #202040 20px,
+      #202040 40px
+    );
+  border-top:4px solid #7c4dff;
+}
+
+#gyatPlayer {
+  position:absolute;
+  width:55px;
+  height:55px;
+  left:100px;
+  bottom:85px;
+  z-index:20;
+  display:grid;
+  place-items:center;
+  font-size:31px;
+  border:3px solid white;
+  border-radius:16px;
+  background:linear-gradient(
+    135deg,
+    #ff4fd8,
+    #7c4dff
+  );
+  box-shadow:
+    0 0 15px #ff4fd8,
+    0 0 35px rgba(124,77,255,.7);
+}
+
+#gyatHUD {
+  position:absolute;
+  top:15px;
+  left:15px;
+  right:15px;
+  z-index:200;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.gyat-hud-item {
+  padding:8px 12px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:10px;
+  background:rgba(5,5,15,.75);
+  font-weight:900;
+  box-shadow:0 7px 20px rgba(0,0,0,.2);
+}
+
+.gyat-obstacle {
+  position:absolute;
+  bottom:85px;
+  width:45px;
+  height:65px;
+  z-index:10;
+  border:3px solid #ff8b8b;
+  border-radius:8px;
+  background:linear-gradient(
+    135deg,
+    #ff3838,
+    #8b0000
+  );
+  box-shadow:0 0 18px rgba(255,0,0,.7);
+}
+
+.gyat-obstacle::after {
+  content:'💀';
+  position:absolute;
+  left:7px;
+  top:15px;
+  font-size:24px;
+}
+
+.gyat-tall {
+  height:100px;
+}
+
+.gyat-wide {
+  width:75px;
+  height:35px;
+}
+
+.gyat-coin {
+  position:absolute;
+  width:31px;
+  height:31px;
+  z-index:15;
+  border-radius:50%;
+  border:3px solid #fff8a8;
+  background:
+    radial-gradient(
+      circle,
+      #fff36a,
+      #ffd000 55%,
+      #ff8c00
+    );
+  box-shadow:0 0 20px #ffd000;
+  animation:gyatCoin .65s linear infinite;
+}
+
+.gyat-coin::after {
+  content:'$';
+  position:absolute;
+  left:8px;
+  top:1px;
+  color:#875500;
+  font-weight:900;
+}
+
+@keyframes gyatCoin {
+  50% {
+    transform:scaleX(.3);
+  }
+}
+
+.gyat-gem {
+  position:absolute;
+  width:27px;
+  height:27px;
+  z-index:15;
+  transform:rotate(45deg);
+  border:2px solid white;
+  background:#22d3ee;
+  box-shadow:0 0 20px #22d3ee;
+}
+
+.gyat-laser {
+  position:absolute;
+  height:8px;
+  z-index:12;
+  border-radius:10px;
+  background:#ff315c;
+  box-shadow:
+    0 0 10px #ff315c,
+    0 0 25px #ff315c;
+}
+
+.gyat-effect {
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:100;
+}
+
+.gyat-shake {
+  animation:gyatShake .18s linear;
+}
+
+@keyframes gyatShake {
+  0% {transform:translate(0,0)}
+  25% {transform:translate(5px,-4px)}
+  50% {transform:translate(-5px,4px)}
+  75% {transform:translate(4px,3px)}
+  100% {transform:translate(0,0)}
+}
+
+.gyat-flash {
+  position:absolute;
+  inset:0;
+  background:white;
+  opacity:0;
+  z-index:300;
+  pointer-events:none;
+}
+
+.gyat-flash.active {
+  animation:flash .25s;
+}
+
+@keyframes flash {
+  0% {opacity:.8}
+  100% {opacity:0}
+}
+
+/* MENUS */
+
+#gyatStart,
+#gyatOver,
+#gyatComplete {
+  position:absolute;
+  inset:0;
+  z-index:500;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  background:rgba(5,5,15,.83);
+  backdrop-filter:blur(7px);
+}
+
+#gyatStart {
+  display:flex;
+}
+
+.gyat-big-title {
+  font-size:clamp(40px,8vw,75px);
+  font-weight:900;
+  background:linear-gradient(
+    90deg,
+    #ff4fd8,
+    #8b5cf6,
+    #22d3ee
+  );
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.gyat-level-name {
+  font-size:32px;
+  font-weight:900;
+  margin:5px 0 12px;
+}
+
+#gyatStart p,
+#gyatOver p,
+#gyatComplete p {
+  color:#aaaabd;
+}
+
+.gyat-action {
+  margin-top:16px;
+  padding:13px 28px;
+  border:0;
+  border-radius:13px;
+  color:white;
+  background:linear-gradient(
+    90deg,
+    #7c3aed,
+    #ec4899
+  );
+  font-family:inherit;
+  font-size:17px;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.gyat-action.secondary {
+  background:rgba(255,255,255,.08);
+}
+
+.result-stars {
+  font-size:43px;
+}
+
+#gyatJump {
+  display:none;
+  position:absolute;
+  right:18px;
+  bottom:105px;
+  z-index:400;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  border:3px solid white;
+  color:white;
+  background:rgba(124,77,255,.7);
+  font-size:30px;
+}
+
+@media(max-width:700px) {
+
+  #gyatJump {
+    display:block;
+  }
+
+  #gyatPlayer {
+    left:55px;
+  }
+
+  .gyat-level-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .gyat-level-card {
+    min-height:170px;
+    padding:15px;
+  }
+
+  .gyat-level-icon {
+    font-size:40px;
+  }
+
+}
+
+@media(max-width:430px) {
+
+  .gyat-level-grid {
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+  }
+
+  .gyat-level-card {
+    min-height:155px;
+  }
+
+  .gyat-level-card h3 {
+    font-size:16px;
+  }
+
+}
+```
+
